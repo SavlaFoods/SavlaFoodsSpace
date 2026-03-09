@@ -19,7 +19,8 @@ target 'SavlaFoodsSpace' do
 
   use_react_native!(
     :path => config[:reactNativePath],
-    # An absolute path to your application root.
+    :fabric_enabled => false,
+    :hermes_enabled => true,
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
@@ -27,8 +28,14 @@ target 'SavlaFoodsSpace' do
     react_native_post_install(
       installer,
       config[:reactNativePath],
-      :mac_catalyst_enabled => false,
-      # :ccache_enabled => true
+      :mac_catalyst_enabled => false
     )
+
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+      end
+    end
+
   end
 end
